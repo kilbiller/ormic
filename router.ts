@@ -2,28 +2,25 @@ import { ServerRequest } from "./deps.ts";
 import * as matcher from "./matcher.ts";
 import { Handler } from "./server.ts";
 
-type HttpMethod =
-  | "GET"
-  | "POST"
-  | "PUT"
-  | "DELETE"
-  | "HEAD"
-  | "PATCH"
-  | "OPTIONS";
-
-type Route = (
-  method: HttpMethod,
-  path: string,
-  handler: RouteHandler,
-) => Handler;
+const httpMethods = [
+  "GET",
+  "POST",
+  "PUT",
+  "DELETE",
+  "HEAD",
+  "PATCH",
+  "OPTIONS",
+];
 
 interface RouteRequest extends ServerRequest {
-  params: undefined | { [key: string]: string };
+  params: undefined | Record<string, string>;
 }
 
 type RouteHandler = (
   req: RouteRequest,
 ) => Promise<string | object | null | void>;
+
+type Route = (method: string, path: string, handler: RouteHandler) => Handler;
 
 const createRoute: Route = (method, path, handler) => {
   return async (req) => {
@@ -47,20 +44,13 @@ const createRoute: Route = (method, path, handler) => {
   };
 };
 
-export const get = (path: string, handler: RouteHandler) =>
-  createRoute("GET", path, handler);
-export const post = (path: string, handler: RouteHandler) =>
-  createRoute("POST", path, handler);
-export const put = (path: string, handler: RouteHandler) =>
-  createRoute("PUT", path, handler);
-export const del = (path: string, handler: RouteHandler) =>
-  createRoute("DELETE", path, handler);
-export const patch = (path: string, handler: RouteHandler) =>
-  createRoute("PATCH", path, handler);
-export const head = (path: string, handler: RouteHandler) =>
-  createRoute("HEAD", path, handler);
-export const options = (path: string, handler: RouteHandler) =>
-  createRoute("OPTIONS", path, handler);
+type MethodRoute = (path: string, handler: RouteHandler) => Handler;
+export const { get, post, put, del, head, patch, options } = httpMethods
+  .reduce((obj: Record<string, MethodRoute>, method) => {
+    const funcName = (method === "DELETE" ? "del" : method).toLowerCase();
+    obj[funcName] = (path, handler) => createRoute(method, path, handler);
+    return obj;
+  }, {});
 
 type Router = (...handlers: Handler[]) => Handler;
 export const createRouter: Router = (...handlers) => {

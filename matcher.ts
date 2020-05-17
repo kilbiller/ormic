@@ -12,9 +12,11 @@ interface Item {
 }
 
 function strip(str: string) {
-  if (str === SEP) return str;
+  if (str === SEP) {
+    return str;
+  }
   (str.charCodeAt(0) === SLASH) && (str = str.substring(1));
-  var len = str.length - 1;
+  const len = str.length - 1;
   return str.charCodeAt(len) === SLASH ? str.substring(0, len) : str;
 }
 
@@ -31,16 +33,20 @@ function isMatch(arr: string[], obj: Item, idx: any) {
 }
 
 export function match(str: string, all: Item[][]) {
-  var i = 0, tmp: Item[], segs = split(str), len = segs.length, l;
-  var fn = isMatch.bind(isMatch, segs);
+  const segs = split(str);
+  const len = segs.length;
+  const fn = isMatch.bind(isMatch, segs);
 
-  for (; i < all.length; i++) {
-    tmp = all[i];
+  for (let i = 0; i < all.length; i++) {
+    const tmp = all[i];
+    const l = tmp.length;
     if (
-      (l = tmp.length) === len || (l < len && tmp[l - 1].type === ATYPE) ||
+      l === len || (l < len && tmp[l - 1].type === ATYPE) ||
       (l > len && tmp[l - 1].type === OTYPE)
     ) {
-      if (tmp.every(fn)) return tmp;
+      if (tmp.every(fn)) {
+        return tmp;
+      }
     }
   }
 
@@ -52,16 +58,20 @@ export function parse(str: string) {
     return [{ old: str, type: STYPE, val: str, end: "" }];
   }
 
-  var c, x, t, sfx, nxt = strip(str), i = -1, j = 0, len = nxt.length, out = [];
+  let nxt = strip(str);
+  let i = -1;
+  let j = 0;
+  let len = nxt.length;
+  const out = [];
 
   while (++i < len) {
-    c = nxt.charCodeAt(i);
+    let c = nxt.charCodeAt(i);
 
     if (c === COLON) {
       j = i + 1; // begining of param
-      t = PTYPE; // set type
-      x = 0; // reset mark
-      sfx = "";
+      let t = PTYPE; // set type
+      let x = 0; // reset mark
+      let sfx = "";
 
       while (i < len && nxt.charCodeAt(i) !== SLASH) {
         c = nxt.charCodeAt(i);
@@ -117,16 +127,22 @@ export function parse(str: string) {
 }
 
 export function exec(str: string, arr: Item[]) {
-  var i = 0, x, y, segs = split(str), out: { [key: string]: string } = {};
-  for (; i < arr.length; i++) {
-    x = segs[i];
-    y = arr[i];
+  const segs = split(str);
+  const out: Record<string, string> = {};
 
-    if (x === SEP) continue;
+  for (let i = 0; i < arr.length; i++) {
+    const x = segs[i];
+    const y = arr[i];
+
+    if (x === SEP) {
+      continue;
+    }
+
     // @ts-ignore
     if (x !== void 0 && y.type | 2 === OTYPE) {
       out[y.val] = x.replace(y.end, "");
     }
   }
+
   return out;
 }

@@ -46,10 +46,13 @@ Deno.test("router should match routes correclty", async () => {
 
   assertEquals(longBody, "long");
 
-  const bookResponse = await fetch(`http://127.0.0.1:${port}/books/1415/sell`);
+  const uuid = "0db8f950-9852-11ea-bb37-0242ac130002";
+  const bookResponse = await fetch(
+    `http://127.0.0.1:${port}/books/${uuid}/sell`,
+  );
   const bookBody = await bookResponse.json();
 
-  assertEquals(bookBody.book_id, "1415");
+  assertEquals(bookBody.book_id, uuid);
 
   server.close();
 });
