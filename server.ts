@@ -1,14 +1,8 @@
-import {
-  serve,
-  ServerRequest,
-  Server,
-  Response,
-  HTTPOptions,
-} from "./deps.ts";
+import { HTTPOptions, Response, serve, Server, ServerRequest } from "./deps.ts";
 
 export type Handler = (
   req: ServerRequest,
-) => Promise<string | object | null | void>;
+) => Promise<string | Record<string, unknown> | null | void>;
 
 export const createServer = (handler: Handler) => {
   let server: Server | undefined;
@@ -41,7 +35,11 @@ export const createServer = (handler: Handler) => {
   };
 };
 
-export const json = (data: object, status = 200, headers = {}): Response => {
+export const json = (
+  data: Record<string, unknown>,
+  status = 200,
+  headers = {},
+): Response => {
   return {
     status,
     body: JSON.stringify(data),

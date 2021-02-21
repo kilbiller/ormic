@@ -1,6 +1,8 @@
-import { assertEquals } from "https://deno.land/std@0.51.0/testing/asserts.ts";
+// deno-lint-ignore-file require-await
+
+import { assertEquals } from "https://deno.land/std@0.88.0/testing/asserts.ts";
 import { createServer, json } from "./server.ts";
-import { createRouter, get } from "./router.ts";
+import { createRouter, del, get } from "./router.ts";
 
 const port = 3000;
 
@@ -16,7 +18,7 @@ Deno.test("server should respond correctly", async () => {
   server.close();
 });
 
-Deno.test("router should match routes correclty", async () => {
+Deno.test("router should match routes correctly", async () => {
   const router = createRouter(
     get("/", async (req) => "index"),
     get("/long/*", async (req) => "long"),
@@ -53,6 +55,24 @@ Deno.test("router should match routes correclty", async () => {
   const bookBody = await bookResponse.json();
 
   assertEquals(bookBody.book_id, uuid);
+
+  server.close();
+});
+
+Deno.test("DELETE method", async () => {
+  const router = createRouter(
+    del("/", async (req) => "delete"),
+  );
+
+  const server = createServer(router);
+  server.listen(`:${port}`);
+
+  const indexResponse = await fetch(`http://127.0.0.1:${port}`, {
+    method: "DELETE",
+  });
+  const indexBody = await indexResponse.text();
+
+  assertEquals(indexBody, "delete");
 
   server.close();
 });

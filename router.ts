@@ -18,7 +18,7 @@ interface RouteRequest extends ServerRequest {
 
 type RouteHandler = (
   req: RouteRequest,
-) => Promise<string | object | null | void>;
+) => Promise<string | Record<string, unknown> | null | void>;
 
 type Route = (method: string, path: string, handler: RouteHandler) => Handler;
 

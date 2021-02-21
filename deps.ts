@@ -1,7 +1,10 @@
 export {
   serve,
-  ServerRequest,
   Server,
-  Response,
+  ServerRequest,
+} from "https://deno.land/std@0.88.0/http/server.ts";
+
+export type {
   HTTPOptions,
-} from "https://deno.land/std@0.51.0/http/server.ts";
+  Response,
+} from "https://deno.land/std@0.88.0/http/server.ts";
