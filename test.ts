@@ -1,6 +1,6 @@
 // deno-lint-ignore-file require-await
 
-import { assertEquals } from "https://deno.land/std@0.88.0/testing/asserts.ts";
+import { assertEquals } from "./deps.ts";
 import { createServer, json } from "./server.ts";
 import { createRouter, del, get } from "./router.ts";
 

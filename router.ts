@@ -1,3 +1,5 @@
+// deno-lint-ignore-file require-await
+
 import { ServerRequest } from "./deps.ts";
 import * as matcher from "./matcher.ts";
 import { Handler } from "./server.ts";

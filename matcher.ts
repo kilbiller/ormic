@@ -138,7 +138,7 @@ export function exec(str: string, arr: Item[]) {
       continue;
     }
 
-    // @ts-ignore
+    // @ts-ignore dunno
     if (x !== void 0 && y.type | 2 === OTYPE) {
       out[y.val] = x.replace(y.end, "");
     }
